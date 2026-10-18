@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PDF 엑셀 변환기</title>
+    <link rel="stylesheet" href="/src/ui/style.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div class="brand">
+        <span class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18" stroke="currentColor" stroke-width="1.5"/></svg>
+        </span>
+        <span class="name">PDF 엑셀 변환기</span>
+      </div>
+      <div class="privacy" title="변환은 이 브라우저 안에서만 이루어지고, 파일은 어디에도 업로드되지 않습니다.">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        파일이 이 PC 밖으로 나가지 않아요
+      </div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <h1>엑셀에서 만든 PDF를<br />다시 엑셀로 되돌립니다</h1>
+        <p>표의 칸, 병합된 셀, 숫자, 여러 쪽에 걸친 표까지 원래 모양대로 복원해요.</p>
+      </section>
+
+      <section class="notice" aria-labelledby="notice-title">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div>
+          <h2 id="notice-title">파일은 서버로 전송되지도, 저장되지도 않아요</h2>
+          <ul>
+            <li>PDF와 변환된 엑셀은 인터넷으로 보내지지 않고, <strong>지금 쓰고 있는 컴퓨터의 브라우저 안에서만</strong> 처리돼요.</li>
+            <li>회원가입이나 로그인이 없고, 파일을 서버에 올리거나 보관하지 않아요.</li>
+            <li>창을 닫거나 새로고침하면 변환 내용은 모두 사라져요. 필요한 결과는 꼭 다운로드해 두세요.</li>
+          </ul>
+          <p class="notice-check">보안 담당자 확인용: 브라우저 개발자 도구의 '네트워크' 탭을 열어 두고 변환해 보면, 파일이 어디로도 전송되지 않는 것을 직접 확인할 수 있어요.</p>
+        </div>
+      </section>
+
+      <label id="drop" class="drop" tabindex="0">
+        <input id="file" type="file" accept="application/pdf,.pdf" multiple hidden />
+        <svg viewBox="0 0 24 24" width="36" height="36" aria-hidden="true"><path d="M12 16V4m0 0l-4 4m4-4l4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <strong>PDF 파일을 여기에 끌어다 놓으세요</strong>
+        <span>또는 클릭해서 선택 · 여러 개 한 번에 가능</span>
+      </label>
+
+      <ul id="files" class="files"></ul>
+
+      <section id="preview" class="preview" hidden>
+        <div class="preview-head">
+          <div>
+            <h2 id="preview-title"></h2>
+            <p class="hint">미리보기는 변환 결과를 간단히 보여주는 화면이에요. 실제 파일은 엑셀에서 확인해 주세요.</p>
+          </div>
+          <button id="preview-download" class="btn primary" type="button">엑셀 다운로드</button>
+        </div>
+        <div id="quality" class="quality"></div>
+        <label class="option">
+          <input id="split-lines" type="checkbox" />
+          <span>
+            <strong>칸 안의 여러 줄을 한 줄씩 다른 행으로 나누기</strong>
+            <span class="hint">원본 엑셀이 한 줄에 한 행씩 쓴 양식(지원서, 동의서 등)이면 켜 보세요. 셀 안에서 줄바꿈한 표는 끄는 게 더 정확해요.</span>
+          </span>
+        </label>
+        <div id="manage" class="manage" hidden>
+          <div class="manage-head">
+            <strong>시트 정리</strong>
+            <span class="hint">PDF에는 원래 시트 구분이 없어서 자동으로 나눠요. 합칠 시트를 고른 뒤 '합치기'를 누르세요.</span>
+          </div>
+          <ul id="sheet-list" class="sheet-list"></ul>
+          <div class="manage-actions">
+            <button id="merge" class="btn primary" type="button" disabled>선택한 시트 합치기</button>
+            <button id="split" class="btn" type="button" disabled>쪽별로 나누기</button>
+            <button id="undo" class="btn" type="button" disabled>되돌리기</button>
+            <button id="reset" class="btn" type="button" disabled>처음 상태로</button>
+          </div>
+        </div>
+        <div id="tabs" class="tabs" role="tablist"></div>
+        <div id="sheet" class="sheet-wrap"></div>
+        <div id="more" class="more" hidden>
+          <span id="more-text"></span>
+          <button id="more-button" class="btn" type="button">모두 보기</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p>엑셀에서 'PDF로 저장'한 파일에 맞춰져 있어요. 스캔한 PDF(사진처럼 된 PDF)는 아직 변환할 수 없어요.</p>
+    </footer>
+
+    <script type="module" src="/src/ui/main.js"></script>
+  </body>
+</html>

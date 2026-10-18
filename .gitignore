@@ -1,0 +1,7 @@
+node_modules/
+samples/
+out/
+dist/
+public/pdfjs/
+# 5MB; regenerate with scripts/print-fixtures.sh
+fixtures/pdf/libreoffice/large.pdf
